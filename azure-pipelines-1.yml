@@ -22,12 +22,12 @@ steps:
 
 
 #- task: PublishBuildArtifacts@1
-#  inputs:
-#    PathtoPublish: '$(System.DefaultWorkingDirectory)/_Wihma.habit-api'
+  inputs:
+    PathtoPublish: '$(System.DefaultWorkingDirectory)'
 
 - task: ArchiveFiles@2
   inputs:
-    rootFolderOrFile: '$(System.DefaultWorkingDirectory)/_Wihma.habit-api'
+    rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
     includeRootFolder: false
 
 
