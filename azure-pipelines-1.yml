@@ -21,9 +21,9 @@ steps:
   displayName: 'npm install and build'
 
 
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: '$(System.DefaultWorkingDirectory)/_Wihma.habit-api'
+#- task: PublishBuildArtifacts@1
+#  inputs:
+#    PathtoPublish: '$(System.DefaultWorkingDirectory)/_Wihma.habit-api'
 
 - task: ArchiveFiles@2
   inputs:
