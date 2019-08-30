@@ -24,7 +24,9 @@ steps:
   inputs:
     rootFolderOrFile: '$(build.sourcesDirectory)'
     includeRootFolder: false
-    archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.SourceVersion)_$(Build.BuildId).zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.SourceVersion)_$(Build.BuildId).tar.gz'
+    archiveType: 'tar' # Options: zip, 7z, tar, wim
+    tarCompression: 'gz' # Optional. Options: gz, bz2, xz, none
 
 - task: PublishBuildArtifacts@1
   displayName: 'Publish Artifact: build'
