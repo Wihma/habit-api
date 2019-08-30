@@ -4,7 +4,7 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
 
 trigger:
-- master
+- develop
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -22,13 +22,14 @@ steps:
   env:
     NODE_ENV: staging
 
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: '$(System.DefaultWorkingDirectory)'
-
 - task: ArchiveFiles@2
   displayName: Archive
   inputs:
-    rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
+    # rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
+    rootFolderOrFile: '$(build.sourcesDirectory)/dist-api'
     includeRootFolder: false
-    archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.SourceVersion)_$(Build.BuildId).zip'
+
+- task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: build'
+  inputs:
+    ArtifactName: build
