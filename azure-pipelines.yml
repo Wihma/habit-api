@@ -1,5 +1,10 @@
+# Node.js
+# Build a general Node.js project with npm.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
 trigger:
-- develop
+- master
 
 pool:
   vmImage: 'ubuntu-latest'
@@ -12,29 +17,16 @@ steps:
 
 - script: |
     npm install
-#    npm run build
   displayName: 'npm install and build'
 
-# Archive files
-# Compress files into .7z, .tar.gz, or .zip
-- task: ArchiveFiles@2
-  inputs:
-    #rootFolderOrFile: '$(Build.ArtifactStagingDirectory)'
-    #includeRootFolder: false
-    #archiveType: 'zip' # Options: zip, 7z, tar, wim
-    #tarCompression: 'gz' # Optional. Options: gz, bz2, xz, none
-    archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip' 
-    #replaceExistingArchive: true 
-    #verbose: # Optional
-    #quiet: # Optional
-  
-# Node.js
+
 - task: PublishBuildArtifacts@1
   inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: 'HabitApi'
-    publishLocation: 'Container'
-# Build a general Node.js project with npm.
-# Add steps that analyze code, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+    PathtoPublish: '$(System.DefaultWorkingDirectory)'
+
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
+    includeRootFolder: false
+
 
