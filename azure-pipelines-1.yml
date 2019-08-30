@@ -22,14 +22,13 @@ steps:
   env:
     NODE_ENV: staging
 
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(System.DefaultWorkingDirectory)'
+
 - task: ArchiveFiles@2
   displayName: Archive
   inputs:
-    rootFolderOrFile: '$(build.sourcesDirectory)/dist'
+    rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
     includeRootFolder: false
     archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.SourceVersion)_$(Build.BuildId).zip'
-
-- task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact: build'
-  inputs:
-    ArtifactName: build
