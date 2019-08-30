@@ -19,14 +19,16 @@ steps:
     npm install
   displayName: 'npm install and build'
 
+- task: ArchiveFiles@2
+  displayName: Archive
+  inputs:
+    rootFolderOrFile: '$(build.sourcesDirectory)/dist'
+    includeRootFolder: false
+    archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.SourceVersion)_$(Build.BuildId).zip'
 
 - task: PublishBuildArtifacts@1
+  displayName: 'Publish Artifact: build'
   inputs:
-    PathtoPublish: '$(System.DefaultWorkingDirectory)'
-
-- task: ArchiveFiles@2
-  inputs:
-    rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
-    includeRootFolder: false
+    ArtifactName: buildApi
 
 
