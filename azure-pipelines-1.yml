@@ -11,14 +11,16 @@ pool:
 
 steps:
 - task: NodeTool@0
+  displayName: 'Use Node 10.x'
   inputs:
-    versionSpec: '10.x'
-  displayName: 'Install Node.js'
+    versionSpec: 10.x
 
 - script: |
     npm install
 #    npm run build
   displayName: 'npm install and build'
+  env:
+    NODE_ENV: staging
 
 - task: ArchiveFiles@2
   displayName: Archive
