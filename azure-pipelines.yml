@@ -18,7 +18,7 @@ steps:
 # Archive files
 # Compress files into .7z, .tar.gz, or .zip
 - task: ArchiveFiles@2
-#  inputs:
+  inputs:
     #rootFolderOrFile: '$(Build.ArtifactStagingDirectory)'
     #includeRootFolder: false
     #archiveType: 'zip' # Options: zip, 7z, tar, wim
