@@ -1,11 +1,12 @@
 {
-  "name": "passport-tutorial",
+  "name": "habit-api",
   "version": "1.0.0",
   "description": "",
   "main": "app.js",
   "dependencies": {
     "body-parser": "^1.18.3",
     "cors": "^2.8.5",
+    "dotenv": "^8.1.0",
     "errorhandler": "^1.5.0",
     "express": "^4.16.4",
     "express-jwt": "^5.3.1",
@@ -22,11 +23,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon app.js",
-
-      "sys": "set NODE_ENV=development& node app.js",
+    "sys": "set NODE_ENV=development& node app.js",
     "prod": "set NODE_ENV=production& node app.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Marc.wihlstrand@gmail.com",
   "license": "ISC"
 }
