@@ -2,6 +2,7 @@
 node_modules
 /dist
 keys.js
+.env
 
 # Acc/Prod build
 wwwroot/
