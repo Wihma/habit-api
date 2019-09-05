@@ -27,7 +27,14 @@ if(!process.env.production) {
   app.use(errorHandler());
 }
 
-console.log(keys.mongoDB.dbURI)
+console.log(keys.mongoDB.dbURI);
+console.log('Display env variables');
+console.log(process.env.PORT);
+console.log(process.env.DATABASE_USER);
+console.log(process.env.DATABASE_PASS);
+console.log(process.env.DATABASE_CLUSTER);
+console.log(process.env.DATABASE_NAME);
+console.log(process.env.DATABASE_PARAMETERS);
 
 mongoose.connect(keys.mongoDB.dbURI, { useNewUrlParser: true }, () => {
   // this should be a proper winston log
@@ -61,4 +68,4 @@ app.use(function(req, res, next) {
   res.status(404).send('Not Found');
 });
 
-app.listen(process.env.port, () => console.log(`Server running on http://localhost: ${process.env.port}`));
+app.listen(process.env.PORT, () => console.log(`Server running on http://localhost: ${process.env.PORT}`));
