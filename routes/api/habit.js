@@ -10,43 +10,43 @@ const HabitPerformed = mongoose.model('HabitPerformed');
 
 //POST new user route (optional, everyone has access)
 router.get('/', (req, res, next) => {
-    const id = req.query.id;
-    console.log({id: req.query})
+  const id = req.query.id;
+  console.log({ id: req.query })
 
-    Habits.findOne({_id: id} )
-      .then((habit) => {
-        res.json(habit)
-      })
-      .catch((error) => {
-        res.json({status: 'error', message: error.message});
-      })
+  Habits.findOne({ _id: id })
+    .then((habit) => {
+      res.json(habit)
+    })
+    .catch((error) => {
+      res.json({ status: 'error', message: error.message });
+    })
 });
 
 router.get('/all', (req, res, next) => {
 
-    Habits.find()
-      .then((habits) => {
-        res.json(habits)
-      })
-      .catch((error) => {
-        res.json({status: 'error', message: error.message});
-      })
+  Habits.find()
+    .then((habits) => {
+      res.json(habits)
+    })
+    .catch((error) => {
+      res.json({ status: 'error', message: error.message });
+    })
 });
 
 router.get('/getAllHabitsForUser', (req, res, next) => {
-  console.log({'message': 'getAllHabitsForUser', userId: req.query.userId});
-  console.log(req.body);
-  if(!req.query.userId || req.query.userId === '' || req.query.userId === null) {
+  console.log({ 'message': 'getAllHabitsForUser', userId: req.query.userId });
+  // console.log(req.body);
+  if (!req.query.userId || req.query.userId === '' || req.query.userId === null) {
     res.status(200).json([]);
   }
 
-  Users.findOne({_id: req.query.userId})
+  Users.findOne({ _id: req.query.userId })
     .populate('habits')
     .exec((err, user) => {
-      if(err) res.status(500).send(err);
-      console.log({type: typeof user.habits, content: user.habits});
-      if(user.habits !== undefined ) {
-          res.status(200).json(user.habits);
+      if (err) res.status(500).send(err);
+      // console.log({type: typeof user.habits, content: user.habits});
+      if (user.habits !== undefined) {
+        res.status(200).json(user.habits);
       } else {
         res.status(200).json([]);
       }
@@ -61,31 +61,37 @@ router.get('/getAllHabitsForUser', (req, res, next) => {
 });
 
 
-router.delete('/delete', (req, res, next) => {
-  console.log(req.body);
-  // res.json({status: 'error', message: req.body.id});
-  Habits.findById(req.body.id, function (err, habit) {
-    if(habit) {
-      Habits.findByIdAndRemove(req.body.id, (err, habit) => {
-          // As always, handle any potential errors:
-          if (err) return res.status(500).send(err);
-          // We'll create a simple object to send back with a message and the id of the document that was removed
-          // You can really do this however you want, though.
-          const response = {
-              message: "Todo successfully deleted",
-              id: habit._id
-          };
-          return res.status(200).send(response);
+router.delete('/delete', (req, res, next) => {  
+  if(!req.query.hasOwnProperty("_id")) 
+  {    
+    return res.status(404).json({ message: 'not found' })
+  } 
+  if (req.query._id === null) {
+    return res.status(404).json({ message: 'not found' })
+  }
+  
+  
+  Habits.findById(req.query._id, function (err, habit) {
+    if (habit) {
+      Habits.findByIdAndRemove(req.query._id, (err, habit) => {
+        // As always, handle any potential errors:
+        if (err) return res.status(500).send(err);
+        // We'll create a simple object to send back with a message and the id of the document that was removed
+        // You can really do this however you want, though.
+        const response = {
+          message: "Habit delete successfully"
+        };
+        return res.status(200).send(response);
       })
-      .catch((err) =>{
-        console.log(err);
-        return res.status(500).send(err)
-      });
+        .catch((err) => {
+          console.log(err);
+          return res.status(500).send(err)
+        });
     } else {
-      return res.status(404).json({message:'not found'})
+      return res.status(404).json({ message: 'not found' })
     }
   })
-  } );
+});
 
 
 router.post('/new', (req, res, next) => {
@@ -94,13 +100,13 @@ router.post('/new', (req, res, next) => {
   const userId = req.body.userId;
   const habit = req.body.habit;
 
-  if(!habit || !userId) {
+  if (!habit || !userId) {
     throw new Error('Incomplete request');
   }
 
-  console.log({userId: userId, habit: habit});
+  console.log({ userId: userId, habit: habit });
 
-  Users.findOne({_id: userId})
+  Users.findOne({ _id: userId })
     .then((user) => {
 
       console.info('found one_2');
@@ -111,7 +117,7 @@ router.post('/new', (req, res, next) => {
         .then(
           () => {
             newHabit.save(() => {
-              res.status(200).json({habit: newHabit});
+              res.status(200).json({ habit: newHabit });
             });
           },
           (err) => {
@@ -121,13 +127,13 @@ router.post('/new', (req, res, next) => {
           }
         )
         .catch((error) => {
-          console.error( 'onRejected function called: ' + error.message );
-          res.json({status: 'error', message: error.message});
+          console.error('onRejected function called: ' + error.message);
+          res.json({ status: 'error', message: error.message });
         });
     })
     .catch((error) => {
-      console.error( 'could not find user: ' + error.message );
-      res.json({status: 'error', message: error.message});
+      console.error('could not find user: ' + error.message);
+      res.json({ status: 'error', message: error.message });
     });
 
   //
@@ -169,21 +175,21 @@ router.post('/new', (req, res, next) => {
 
 router.put('/update', (req, res, next) => {
   const updatedHabit = req.body.habit;
-  if(!updatedHabit) {
+  if (!updatedHabit) {
     throw new Error('Empty request');
   }
-  Habits.findOne({_id: updatedHabit._id} )
+  Habits.findOne({ _id: updatedHabit._id })
     .then((dbHabit) => {
       console.log('trying to update habit');
-      console.log({dbHabit: dbHabit, updateHabit: updatedHabit});
+      console.log({ dbHabit: dbHabit, updateHabit: updatedHabit });
       Object.assign(dbHabit, updatedHabit);
       dbHabit.save()
         .then(() => {
-          res.json({message: 'updated successfully', habit: dbHabit})
+          res.json({ message: 'updated successfully', habit: dbHabit })
         })
         .catch((error) => {
-          console.error( 'onRejected function called: ' + error.message );
-          res.json({status: 'error', message: error.message});
+          console.error('onRejected function called: ' + error.message);
+          res.json({ status: 'error', message: error.message });
         });
     });
 });
@@ -192,21 +198,21 @@ router.post('/habitPerformed', (req, res, next) => {
   const dayPerformed = req.body.dayPerformed;
   const habitId = req.body.habitId;
 
-  if(!dayPerformed || !habitId) {
+  if (!dayPerformed || !habitId) {
     throw new Error('Faulty request');
   }
 
   const newHabitPerformed = new HabitPerformed(dayPerformed);
 
-  Habits.findOne({_id: habitId} )
+  Habits.findOne({ _id: habitId })
     .then((habit) => {
       habit.daysPerformed.push(newHabitPerformed);
       habit.save()
         .then(() => {
-          res.json({message: 'added successfully', habit: habit, dayPerformed: newHabitPerformed})
+          res.json({ message: 'added successfully', habit: habit, dayPerformed: newHabitPerformed })
         })
         .catch((error) => {
-          res.json({status: 'error', message: error.message});
+          res.json({ status: 'error', message: error.message });
         });
     });
 });
