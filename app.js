@@ -24,22 +24,22 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({ secret: 'passport-tutorial', cookie: { maxAge: 60000 }, resave: false, saveUninitialized: false }));
 
-if(!process.env.production) {
+if (!process.env.production) {
   app.use(errorHandler());
 }
 
-console.log(keys.mongoDB.dbURI);
-console.log('Display env variables');
-console.log(process.env.PORT);
-console.log(process.env.DATABASE_USER);
-console.log(process.env.DATABASE_PASS);
-console.log(process.env.DATABASE_CLUSTER);
-console.log(process.env.DATABASE_NAME);
-console.log(process.env.DATABASE_PARAMETERS);
+// console.log(keys.mongoDB.dbURI);
+// console.log('Display env variables');
+// console.log(process.env.PORT);
+// console.log(process.env.DATABASE_USER);
+// console.log(process.env.DATABASE_PASS);
+// console.log(process.env.DATABASE_CLUSTER);
+// console.log(process.env.DATABASE_NAME);
+// console.log(process.env.DATABASE_PARAMETERS);
 
 mongoose.connect(keys.mongoDB.dbURI, { useNewUrlParser: true }, () => {
   // this should be a proper winston log
-  console.log('connected to mongod');    
+  console.log('connected to mongod');
 });
 mongoose.set('debug', true);
 
@@ -51,7 +51,7 @@ app.use(require('./routes'));
 
 //Error handlers & middlewares
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // No routes handled the request and no system error, that means 404 issue.
   // Forward to next middleware to handle it.
   if (!err) return next();
@@ -65,7 +65,7 @@ app.use(function(err, req, res, next) {
 });
 
 // catch 404. 404 should be consider as a default behavior, not a system error.
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   res.status(404).send('Not Found');
 });
 
