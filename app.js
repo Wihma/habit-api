@@ -3,7 +3,8 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const cors = require('cors');
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
+mongoose.Promise = require("bluebird");
 const errorHandler = require('errorhandler');
 
 require('dotenv-flow').config();

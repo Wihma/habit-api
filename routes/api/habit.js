@@ -33,6 +33,22 @@ router.get('/all', (req, res, next) => {
     })
 });
 
+router.get('/getHabitIdsForUser', (req, res, next) => {
+  console.log({ endpoint: '/getHabitIdsForUser', userId: req.query.userId });  
+  if (!req.query.userId || req.query.userId === '' || req.query.userId === null) {
+    res.status(200).json([]);
+  }
+  Users
+    .findOne({ _id: req.query.userId })
+    .exec()
+    .then(user => {
+      res.status(200).json(user.habits);
+    })
+    .catch(err => {
+      res.status(500).send(err);
+    })
+});
+
 router.get('/getAllHabitsForUser', (req, res, next) => {
   console.log({ 'message': 'getAllHabitsForUser', userId: req.query.userId });
   // console.log(req.body);
@@ -42,35 +58,25 @@ router.get('/getAllHabitsForUser', (req, res, next) => {
 
   Users.findOne({ _id: req.query.userId })
     .populate('habits')
-    .exec((err, user) => {
-      if (err) res.status(500).send(err);
-      // console.log({type: typeof user.habits, content: user.habits});
-      if (user.habits !== undefined) {
-        res.status(200).json(user.habits);
-      } else {
-        res.status(200).json([]);
-      }
+    .exec()
+    .then(user => {
+      res.status(200).json(user.habits);
+    })
+    .catch(err => {
+      res.status(500).send(err);
     });
-  // Habits.find()
-  //   .then((habits) => {
-  //     res.json(habits)
-  //   })
-  //   .catch((error) => {
-  //     res.json({status: 'error', message: error.message});
-  //   })
 });
 
 
-router.delete('/delete', (req, res, next) => {  
-  if(!req.query.hasOwnProperty("_id")) 
-  {    
+router.delete('/delete', (req, res, next) => {
+  console.log({ endpoint: '/delete', _id: req.query._id });
+  if (!req.query.hasOwnProperty("_id")) {
     return res.status(404).json({ message: 'not found' })
-  } 
+  }
   if (req.query._id === null) {
     return res.status(404).json({ message: 'not found' })
   }
-  
-  
+
   Habits.findById(req.query._id, function (err, habit) {
     if (habit) {
       Habits.findByIdAndRemove(req.query._id, (err, habit) => {
@@ -83,10 +89,10 @@ router.delete('/delete', (req, res, next) => {
         };
         return res.status(200).send(response);
       })
-        .catch((err) => {
-          console.log(err);
-          return res.status(500).send(err)
-        });
+      .catch((err) => {
+        console.log(err);
+        return res.status(500).send(err)
+      });
     } else {
       return res.status(404).json({ message: 'not found' })
     }
@@ -99,6 +105,8 @@ router.post('/new', (req, res, next) => {
   // i need to find the user first
   const userId = req.body.userId;
   const habit = req.body.habit;
+
+  console.log({ route: 'api/habit/new' })
 
   if (!habit || !userId) {
     throw new Error('Incomplete request');

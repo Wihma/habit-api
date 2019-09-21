@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const router = require('express').Router();
 const auth = require('../auth');
 const Users = mongoose.model('Users');
+const Habits = mongoose.model('Habits');
 
 //jwt stuff
 const jwt = require("jsonwebtoken");
@@ -55,6 +56,40 @@ router.post('/', auth.optional, (req, res, next) => {
       res.json({status: 'error', message: error.message});
     });
 });
+
+// deletes user and all referenced habits
+router.delete('/', (req, res, next)  => {  
+  if(!req.query.hasOwnProperty("_id")) {
+    res.status(404).json({
+      message: "Not found"
+    })
+  }
+  console.log({"endpoint": "delete", _id: req.query._id})
+
+  let userId = req.query._id;
+
+  if(!userId) {
+    res.status(404).json({
+      message: "Not found"
+    })
+  }
+
+  Users.findById({_id: userId})
+    .then((user) => {
+      Habits.deleteMany({_id: {$in: user.Habits}})
+        .then(() => {
+          Users.findByIdAndRemove(userId)
+            .then(() => {
+              res.status(200).json({
+                message: 'User deleted successfully'
+              })
+            })
+        })
+        .catch(err => {
+          console.log(err)
+        }) 
+    });
+})
 
 //POST login route (optional, everyone has access)
 router.post('/login', auth.optional, (req, res, next) => {
