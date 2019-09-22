@@ -50,20 +50,30 @@ router.get('/getHabitIdsForUser', (req, res, next) => {
 
 router.get('/getAllHabitsForUser', (req, res, next) => {
   console.log({ 'message': 'getAllHabitsForUser', userId: req.query.userId });
-  // console.log(req.body);
+  console.log(req.body);
   if (!req.query.userId || req.query.userId === '' || req.query.userId === null) {
     res.status(200).json([]);
   }
-
-  Users.findOne({ _id: req.query.userId })
+  console.log("trying to find user")
+  Users.findById({ _id: req.query.userId })
     .populate('habits')
     .exec()
-    .then(user => {
-      res.status(200).json(user.habits);
-    })
+    .then(
+      user => {
+        if (!user || user === null) {
+          res.status(401).json({ message: "Invalid user" })
+        } else {          
+          res.status(200).json(user.habits);
+        }
+      },
+      (err) => {
+        res.status(500).send(err);
+      }
+    )
     .catch(err => {
-      res.status(500).send(err);
-    });
+      console.log("cannot find user")
+    })
+
 });
 
 

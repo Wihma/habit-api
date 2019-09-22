@@ -97,6 +97,8 @@ router.post('/login', (req, res, next) => {
         return res.status(200).json({
           message: "Auth Passed",
           userId: user._id,
+          username: user.username,
+          email: user.email,
           token: token
         })
       } else {
