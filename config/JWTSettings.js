@@ -15,8 +15,8 @@ module.exports = {
     },
     unlessPaths: {
         path: [
-            '/login',
-            { url: '/login', methods: ['GET', 'POST'] }
+            '/api/test',
+            { url: '/api/test', methods: ['GET', 'POST'] }
         ],
         path: [
             '/api/user/login',
