@@ -1,24 +1,14 @@
 const mongoose = require('mongoose');
 const router = require('express').Router();
-const auth = require('../auth');
 const Users = mongoose.model('Users');
 const Habits = mongoose.model('Habits');
 
-//jwt stuff
-const jwt = require("jsonwebtoken");
-
-//passport stuff
-const passport = require("passport");
-const jwtStrategy = require("./jwt")
-
-passport.use(jwtStrategy);
-
-router.get('/test', auth.optional, (req, res, next) => {
+router.get('/test', (req, res, next) => {
   res.json(mongoose.modelNames());
 })
 
 //POST new user route (optional, everyone has access)
-router.post('/', auth.optional, (req, res, next) => {
+router.post('/', (req, res, next) => {
   // create new user
   const reqUser = req.body;
   console.log("in req");
@@ -63,7 +53,7 @@ router.post('/', auth.optional, (req, res, next) => {
     })
     .catch(err => {
       res.status(500).json(err)
-    });  
+    });
 });
 
 // deletes user and all referenced habits
@@ -101,53 +91,25 @@ router.delete('/', (req, res, next) => {
 })
 
 //POST login route (optional, everyone has access)
-router.post('/login', auth.optional, (req, res, next) => {
-  let { email, password } = req.body;
-  //This lookup would normally be done using a database
-  console.log({ email: email, password: password });
-
-  Users.findOne({ email: email })
+router.post('/login', (req, res, next) => {
+  Users.findOne({ email: req.body.email })
+    .exec()
     .then((user) => {
       if (!user) {
-        throw new Error('User not found');
+        res.status(404).json({ message: 'User not fond' })
       }
-      if (user.validatePassword(password)) {
-        const opts = {}
-        opts.expiresIn = 120;  //token expires in 2min
-        const secret = "SECRET_KEY" //normally stored in process.env.secret
-        const token = jwt.sign({ email }, secret, opts);
+      if (user.validatePassword(req.body.password)) {
+        const token = user.generateJWT();
         return res.status(200).json({
           message: "Auth Passed",
           userId: user._id,
           token: token
         })
       } else {
-        return res.status(401).json({ message: "Auth Failed" })
+        return res.status(401).json({ message: "Could not log in" })
       }
     }).catch((error) => {
       return res.status(401).json({ message: "Auth Failed" })
-    });
-});
-
-// router.get("/protected", (req, res) => {
-//     return res.status(200).send("YAY! this is a protected Route")
-// })
-
-router.get("/protected", passport.authenticate('jwt', { session: false }), (req, res) => {
-  return res.status(200).send("YAY! this is a protected Route")
-})
-
-//GET current route (required, only authenticated users have access)
-router.get('/current', auth.required, (req, res, next) => {
-  const { payload: { id } } = req;
-
-  return Users.findById(id)
-    .then((user) => {
-      if (!user) {
-        return res.sendStatus(400);
-      }
-
-      return res.json({ user: user.toAuthJSON() });
     });
 });
 

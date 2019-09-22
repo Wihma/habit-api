@@ -6,10 +6,13 @@ const cors = require('cors');
 const mongoose = require('mongoose')
 mongoose.Promise = require("bluebird");
 const errorHandler = require('errorhandler');
+var jwt = require('jsonwebtoken');
+var expressJWT = require('express-jwt');
 
 require('dotenv-flow').config();
 
 const keys = require('./config/keys.js');
+const JWTSettings = require('./config/JWTSettings.js');
 
 //Configure mongoose's promise to global promise
 mongoose.promise = global.Promise;
@@ -41,7 +44,10 @@ mongoose.connect(keys.mongoDB.dbURI, { useNewUrlParser: true }, () => {
   // this should be a proper winston log
   console.log('connected to mongod');
 });
-mongoose.set('debug', true);
+if (process.env.development)
+  mongoose.set('debug', true);
+
+app.use(expressJWT(JWTSettings.testSettings).unless(JWTSettings.unlessPaths));
 
 //Models & routes
 require('./models/Users');

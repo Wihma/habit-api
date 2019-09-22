@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const router = require('express').Router();
-// const auth = require('../auth');
 const Habits = mongoose.model('Habits');
 
 // this is required to couple a habit to a specific user
@@ -34,7 +33,7 @@ router.get('/all', (req, res, next) => {
 });
 
 router.get('/getHabitIdsForUser', (req, res, next) => {
-  console.log({ endpoint: '/getHabitIdsForUser', userId: req.query.userId });  
+  console.log({ endpoint: '/getHabitIdsForUser', userId: req.query.userId });
   if (!req.query.userId || req.query.userId === '' || req.query.userId === null) {
     res.status(200).json([]);
   }
@@ -89,10 +88,10 @@ router.delete('/delete', (req, res, next) => {
         };
         return res.status(200).send(response);
       })
-      .catch((err) => {
-        console.log(err);
-        return res.status(500).send(err)
-      });
+        .catch((err) => {
+          console.log(err);
+          return res.status(500).send(err)
+        });
     } else {
       return res.status(404).json({ message: 'not found' })
     }
