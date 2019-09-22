@@ -32,13 +32,13 @@ if (!process.env.production) {
 }
 
 // console.log(keys.mongoDB.dbURI);
-// console.log('Display env variables');
 // console.log(process.env.PORT);
 // console.log(process.env.DATABASE_USER);
 // console.log(process.env.DATABASE_PASS);
 // console.log(process.env.DATABASE_CLUSTER);
 // console.log(process.env.DATABASE_NAME);
 // console.log(process.env.DATABASE_PARAMETERS);
+// console.log(process.env.JWT_SECRET);
 
 mongoose.connect(keys.mongoDB.dbURI, { useNewUrlParser: true }, () => {
   // this should be a proper winston log
@@ -47,7 +47,7 @@ mongoose.connect(keys.mongoDB.dbURI, { useNewUrlParser: true }, () => {
 if (process.env.development)
   mongoose.set('debug', true);
 
-app.use(expressJWT(JWTSettings.testSettings).unless(JWTSettings.unlessPaths));
+app.use(expressJWT(JWTSettings.settings).unless(JWTSettings.unlessPaths));
 
 //Models & routes
 require('./models/Users');

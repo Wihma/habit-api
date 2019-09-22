@@ -9,18 +9,26 @@ const fromHeaderOrQueryString = (req) => {
 }
 
 module.exports = {
-    testSettings: {
+    settings: {
         secret: process.env.JWT_SECRET,
         getToken: fromHeaderOrQueryString
     },
     unlessPaths: {
-        path: [
-            '/api/test',
-            { url: '/api/test', methods: ['GET', 'POST'] }
-        ],
-        path: [
-            '/api/user/login',
-            { url: '/api/user/login', methods: ['GET', 'POST'] }
+        path:[
+            /user\/login*/,
+            /api\/test/
         ]
+        // path: [
+        //     '/api/test',
+        //     { url: '/api/test', methods: ['GET', 'POST'] }
+        // ],
+        // path: [
+        //     '/api/user/login',
+        //     { url: '/api/user/login', methods: ['GET', 'POST'] }
+        // ],
+        // path: [
+        //     '/api/habits/getHabitIdsForUser',
+        //     { url: '/api/habits/getHabitIdsForUser', methods: ['GET', 'POST'] }
+        // ]
     }
 }

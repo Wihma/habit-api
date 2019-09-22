@@ -9,40 +9,35 @@ router.get('/test', (req, res, next) => {
 
 //POST new user route (optional, everyone has access)
 router.post('/', (req, res, next) => {
-  // create new user
-  const reqUser = req.body;
-  console.log("in req");
-  // validate parameters
-  if (!reqUser) {
+  if (!req.body) {
     return res.status(400).json({
       message: 'Empty request',
     });
   }
-  if (!reqUser.email) {
+  if (!req.body.email) {
     return res.status(400).json({
       message: 'Email required',
     });
   }
-  if (!reqUser.password) {
+  if (!req.body.password) {
     return res.status(400).json({
       message: 'Password required',
     });
   }
-  if (!reqUser.username) {
-    reqUser.username = reqUser.email
+  if (!req.body.username) {
+    req.body.username = req.body.email
   }
-  Users.findOne({ email: reqUser.email })
+  Users.findOne({ email: req.body.email })
     .exec()
     .then(user => {
-      console.log({ message: 'in findone', user: user })
       if (!user || user === null) {
         // create new user        
-        const newUser = new Users(reqUser);
+        const newUser = new Users(req.body);
 
-        let possiblePromise = newUser.setPassword(reqUser.password);;
+        let possiblePromise = newUser.setPassword(req.body.password);;
         let isPromise = possiblePromise instanceof Promise;
 
-        newUser.setPassword(reqUser.password);
+        newUser.setPassword(req.body.password);
         newUser.save()
           .then(() => res.status(200).json({ message: "User created successfully" }))
           .catch((err) => res.status(500).json(err));
@@ -63,7 +58,6 @@ router.delete('/', (req, res, next) => {
       message: "Not found"
     })
   }
-  console.log({ "endpoint": "delete", _id: req.query._id })
 
   let userId = req.query._id;
 
