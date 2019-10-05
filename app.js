@@ -6,8 +6,9 @@ const cors = require('cors');
 const mongoose = require('mongoose')
 mongoose.Promise = require("bluebird");
 const errorHandler = require('errorhandler');
-var jwt = require('jsonwebtoken');
-var expressJWT = require('express-jwt');
+const jwt = require('jsonwebtoken');
+const expressJWT = require('express-jwt');
+const winston = require('winston');
 
 require('dotenv-flow').config();
 

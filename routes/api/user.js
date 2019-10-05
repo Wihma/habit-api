@@ -3,6 +3,8 @@ const router = require('express').Router();
 const Users = mongoose.model('Users');
 const Habits = mongoose.model('Habits');
 
+const winston = require('winston');
+
 router.get('/test', (req, res, next) => {
   res.json(mongoose.modelNames());
 })

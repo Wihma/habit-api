@@ -6,6 +6,7 @@ const Habits = mongoose.model('Habits');
 const Users = mongoose.model('Users');
 
 const HabitPerformed = mongoose.model('HabitPerformed');
+const HabitStatistics = mongoose.model('HabitStatistics');
 
 //POST new user route (optional, everyone has access)
 router.get('/', (req, res, next) => {
@@ -62,7 +63,7 @@ router.get('/getAllHabitsForUser', (req, res, next) => {
       user => {
         if (!user || user === null) {
           res.status(401).json({ message: "Invalid user" })
-        } else {          
+        } else {
           res.status(200).json(user.habits);
         }
       },
@@ -120,13 +121,9 @@ router.post('/new', (req, res, next) => {
   if (!habit || !userId) {
     throw new Error('Incomplete request');
   }
-
-  console.log({ userId: userId, habit: habit });
-
   Users.findOne({ _id: userId })
     .then((user) => {
-
-      console.info('found one_2');
+      console.log({user});
       const newHabit = new Habits(habit);
       user.habits.push(newHabit);
 
@@ -138,8 +135,7 @@ router.post('/new', (req, res, next) => {
             });
           },
           (err) => {
-            throw Error(err)
-
+            res.status(500).json({ message: "could not save habit" });
             console.error(err);
           }
         )
@@ -152,21 +148,6 @@ router.post('/new', (req, res, next) => {
       console.error('could not find user: ' + error.message);
       res.json({ status: 'error', message: error.message });
     });
-
-  //
-  // if(!habit) {
-  //   throw new Error('Empty request');
-  // }
-  // const newHabit = new Habits(habit);
-  //
-  // newHabit.save()
-  //   .then(() => {
-  //     res.json({ habit: newHabit })
-  //   })
-  //   .catch((error) => {
-  //     console.error( 'onRejected function called: ' + error.message );
-  //     res.json({status: 'error', message: error.message});
-  //   });
 });
 
 // copy of new before playing around with tying habits to user
@@ -216,14 +197,15 @@ router.post('/habitPerformed', (req, res, next) => {
   const habitId = req.body.habitId;
 
   if (!dayPerformed || !habitId) {
-    throw new Error('Faulty request');
+    res.status(404).json({message: 'cant find habit'})
   }
-
   const newHabitPerformed = new HabitPerformed(dayPerformed);
+  const newStatistics = new HabitStatistics(req.body.statistics);
 
   Habits.findOne({ _id: habitId })
     .then((habit) => {
       habit.daysPerformed.push(newHabitPerformed);
+      habit.statistics = newStatistics;
       habit.save()
         .then(() => {
           res.json({ message: 'added successfully', habit: habit, dayPerformed: newHabitPerformed })
@@ -233,8 +215,5 @@ router.post('/habitPerformed', (req, res, next) => {
         });
     });
 });
-
-
-var updateHabitFieldsfunciton
 
 module.exports = router;

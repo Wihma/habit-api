@@ -11,6 +11,11 @@ const HabitPerformed = new Schema({
   }
 });
 
+const HabitStatistics = new Schema({
+  currentStreak   :       {type: Number},
+  longestStreak   :       {type: Number}
+});
+
 const HabitsSchema = new Schema({
   name            :       {type: String},
   description     :       {type: String, required: true},
@@ -20,8 +25,11 @@ const HabitsSchema = new Schema({
   measureTime     :       {type: Boolean, required: true},
   measureWUnit    :       {type: Boolean, required: true},
   measureUnit     :       {type: String},
-  daysPerformed    :       [HabitPerformed]
+  daysPerformed   :       [HabitPerformed],
+  statistics      :       HabitStatistics
+  
 });
 
 mongoose.model('Habits', HabitsSchema);
 mongoose.model('HabitPerformed', HabitPerformed);
+mongoose.model('HabitStatistics', HabitStatistics);
