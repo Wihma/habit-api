@@ -123,7 +123,7 @@ router.post('/new', (req, res, next) => {
   }
   Users.findOne({ _id: userId })
     .then((user) => {
-      console.log({user});
+      console.log({ user });
       const newHabit = new Habits(habit);
       user.habits.push(newHabit);
 
@@ -195,25 +195,35 @@ router.put('/update', (req, res, next) => {
 router.post('/habitPerformed', (req, res, next) => {
   const dayPerformed = req.body.dayPerformed;
   const habitId = req.body.habitId;
+  const statistics = req.body.statistics  
 
+  console.log({dayPerformed})
+  console.log({habitId});  
+  
   if (!dayPerformed || !habitId) {
     res.status(404).json({message: 'cant find habit'})
   }
   const newHabitPerformed = new HabitPerformed(dayPerformed);
-  const newStatistics = new HabitStatistics(req.body.statistics);
+  const newStatistics = new HabitStatistics(statistics);
 
   Habits.findOne({ _id: habitId })
-    .then((habit) => {
-      habit.daysPerformed.push(newHabitPerformed);
-      habit.statistics = newStatistics;
-      habit.save()
-        .then(() => {
-          res.json({ message: 'added successfully', habit: habit, dayPerformed: newHabitPerformed })
-        })
-        .catch((error) => {
-          res.json({ status: 'error', message: error.message });
-        });
-    });
+    .then(
+      (habit) => {
+        habit.daysPerformed.push(newHabitPerformed);
+        habit.statistics = newStatistics;
+        habit.save()
+          .then(
+            () => {
+              res.status(200).json({ message: 'added successfully' })
+            },
+            (err) => {
+              res.status(500).json(err);
+            })
+      },
+      (err) => {
+        console.log("something fucked up");
+      }
+    )
 });
 
 module.exports = router;
